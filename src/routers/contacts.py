@@ -16,7 +16,10 @@ SearchField = Literal["email", "name", "last_name"]
 
 @router.get("/", response_model=List[ContactResponse])
 async def get_contacts(
-    offset: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+    offset: int = 0,
+    limit: int = 100,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
 ):
     contact_service = ContactService(db)
     contacts = await contact_service.get_contacts(limit, offset, user)
@@ -29,7 +32,7 @@ async def search_contacts(
     email: Optional[str] = Query(None),
     name: Optional[str] = Query(None),
     last_name: Optional[str] = Query(None),
-    user: User = Depends(get_current_user)
+    user: User = Depends(get_current_user),
 ):
     filters = {"email": email, "name": name, "last_name": last_name}
     if not any(filters.values()):
@@ -44,20 +47,30 @@ async def search_contacts(
 
 
 @router.post("/", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
-async def create_contact(body: ContactBase, db: AsyncSession = Depends(get_db),  user: User = Depends(get_current_user)):
+async def create_contact(
+    body: ContactBase,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
     contact_service = ContactService(db)
     return await contact_service.create_contact(body, user)
 
 
 @router.get("/birthdays", response_model=List[ContactResponse])
-async def get_upcoming_birthdays(limit: int = 100, db: AsyncSession = Depends(get_db),  user: User = Depends(get_current_user)):
+async def get_upcoming_birthdays(
+    limit: int = 100,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
     contact_service = ContactService(db)
     contacts = await contact_service.get_upcoming_birthdays(user, limit)
     return contacts
 
 
 @router.get("/{id}", response_model=ContactResponse)
-async def get_contact(id: int, db: AsyncSession = Depends(get_db),  user: User = Depends(get_current_user)):
+async def get_contact(
+    id: int, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+):
     contact_service = ContactService(db)
     contact = await contact_service.get_contact_by_id(id, user)
     if contact is None:
@@ -69,7 +82,10 @@ async def get_contact(id: int, db: AsyncSession = Depends(get_db),  user: User =
 
 @router.put("/{id}", response_model=ContactResponse)
 async def update_contact(
-    body: ContactUpdate, id: int, db: AsyncSession = Depends(get_db),  user: User = Depends(get_current_user)
+    body: ContactUpdate,
+    id: int,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
 ):
     contact_service = ContactService(db)
     contact = await contact_service.update_contact(id, body, user)
@@ -81,7 +97,9 @@ async def update_contact(
 
 
 @router.delete("/{id}", response_model=ContactResponse)
-async def delete_contact(id: int, db: AsyncSession = Depends(get_db),  user: User = Depends(get_current_user)):
+async def delete_contact(
+    id: int, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+):
     contact_service = ContactService(db)
     contact = await contact_service.delete_contact(id, user)
     if contact is None:

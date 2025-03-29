@@ -19,7 +19,9 @@ class ContactRepository:
         return contact.scalar_one_or_none()
 
     async def search_contacts(
-        self, filters: Optional[Dict[str, str]], user: User,
+        self,
+        filters: Optional[Dict[str, str]],
+        user: User,
     ) -> Sequence[Contact]:
         stmt = select(Contact)
 
@@ -30,7 +32,9 @@ class ContactRepository:
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def get_contacts(self, limit: int, offset: int, user: User) -> Sequence[Contact]:
+    async def get_contacts(
+        self, limit: int, offset: int, user: User
+    ) -> Sequence[Contact]:
         stmt = select(Contact).filter_by(user=user).offset(offset).limit(limit)
         contacts = await self.db.execute(stmt)
         return list(contacts.scalars().all())
@@ -42,7 +46,9 @@ class ContactRepository:
         await self.db.refresh(new_contact)
         return new_contact
 
-    async def update_contact(self, id: int, body: ContactUpdate, user: User) -> Contact | None:
+    async def update_contact(
+        self, id: int, body: ContactUpdate, user: User
+    ) -> Contact | None:
         contact = await self.get_contact_by_id(id, user)
         if contact:
             contact.name = body.name

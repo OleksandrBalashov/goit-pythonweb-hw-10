@@ -1,6 +1,15 @@
 from typing import Optional
 from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, relationship
-from sqlalchemy import Date, ForeignKey, Integer, String, Column, DateTime, func, Boolean
+from sqlalchemy import (
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    Column,
+    DateTime,
+    func,
+    Boolean,
+)
 
 
 class Base(DeclarativeBase):
@@ -16,7 +25,9 @@ class Contact(Base):
     phone: Mapped[str] = mapped_column(String(128), nullable=False)
     birthday: Mapped[Date] = mapped_column(Date, nullable=False)
     additional_data: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    user_id = Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), default=None)
+    user_id = Column(
+        "user_id", ForeignKey("users.id", ondelete="CASCADE"), default=None
+    )
     user = relationship("User", backref="contacts")
 
 
